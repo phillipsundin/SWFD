@@ -45,14 +45,15 @@ if (ModelChoice == "RCS")
 OffDiagonal <- (RhoW) }
 
 ##variance parameters for cohort design
-else if (ModelChoice == "Cohort")
-{   Diagonal <-  RhoW + IAC * (1 - RhoW) / n.individuals
-OffDiagonal <- (1 - RhoW - IAC + (IAC * RhoW)) / n.individuals }
+if (ModelChoice == "Cohort")
+
+{   Diagonal <-  (1 - IAC - RhoW +  IAC*RhoW ) / n.individuals
+OffDiagonal <- RhoW + IAC*(1 - RhoW)/ n.individuals }
   
 ##variance parameters for nested exchangeable model
 else if (ModelChoice == "NEC")
-{   Diagonal <-  RhoA
-OffDiagonal <- RhoW + (1-RhoW)/n.individuals  - RhoA }
+{   Diagonal <-  RhoW + (1-RhoW)/n.individuals  - RhoA 
+OffDiagonal <- RhoA}
   
 #creating data frame for design matrix  
 StudyDesign <- data.frame(site = c(1:n.clusters))
@@ -115,7 +116,6 @@ z_3 <- sum(AggregateData_TreatmentABSquared_ByCluster$Tx_AB) *
   OffDiagonal / (Diagonal*( Diagonal + n.periods*OffDiagonal))
 
 q_part1 <-  sum(StudyDesign$Tx_AB) / Diagonal
-
 q_part2 <- 0
 AggregateData_TreatmentA_ByCluster <- aggregate(Tx_A ~ site, 
           data=StudyDesign, FUN = function(x) c(mn = (sum(x))))
@@ -181,7 +181,7 @@ return( list(PowerTx1 = PowerTx1, PowerTx2 = PowerTx2))
 delta_1 <- delta_2 <- 0.4 
 n.periods <- 4
 n.individuals <- 15
-typeIerror  <- 0.05
+typeIerror  <- 0.05/2
 
 #create data frame for power
 PowerTable <- data.frame(RhoW = c(seq(0,0.4,by=0.01)))
@@ -235,11 +235,14 @@ PowerTable$'Concurrent Design, 10 clusters' <-
 
 
 library(reshape2)
+PowerTable$'Single Treatment SWDs' <- PowerTable_OneTx$Power
 PowerTable <- melt(PowerTable,id="RhoW")
+
+FinalPowerTable <- PowerTable
 
 ##Plot power as a function of rho_w
 library(latex2exp)
-PowerPlot <- ggplot(data=PowerTable[PowerTable$RhoW <= 0.35,],
+PowerPlot <- ggplot(data=FinalPowerTable[FinalPowerTable$RhoW <= 0.35,],
        aes(x = RhoW, y=value, colour=variable)) +
        geom_line() +
     labs(y= "Power", x = TeX("$\\rho_w$")) + 
@@ -249,5 +252,7 @@ scale_colour_manual(values = c("#F8766D",
     theme(text = element_text(size=24)) +
  guides(color = guide_legend(override.aes = list(size = 2)))+
 	 theme(text = element_text(size=36)) 
-
 plot(PowerPlot)
+
+ggsave("Powerplot_Section31.png",PowerPlot,
+       width = 40,height=15,units="cm")
