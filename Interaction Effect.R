@@ -52,8 +52,8 @@ OffDiagonal <- (1 - RhoW - IAC + (IAC * RhoW)) / n.individuals }
   
 ##variance parameters for nested exchangeable model
 else if (ModelChoice == "NEC")
-{   Diagonal <-  RhoA
-OffDiagonal <- RhoW + (1-RhoW)/n.individuals  - RhoA }
+{   Diagonal <-  RhoW + (1-RhoW)/n.individuals  - RhoA 
+OffDiagonal <- RhoA}
   
 StudyDesign <- data.frame(site = c(1:n.clusters))
 
@@ -238,7 +238,7 @@ delta_1 <- delta_2 <- delta_3 <- 0.6
 n.clusters <- 8
 n.periods <- 5
 n.individuals <- 15
-typeIerror <- 0.05
+typeIerror <- 0.05/3
 
 #Creating data frame for calculating power
 PowerTable <- data.frame(RhoW = c(rep(seq(0,0.4,by=0.01),times=4)))

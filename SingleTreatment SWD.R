@@ -41,14 +41,15 @@ if (ModelChoice == "RCS")
 OffDiagonal <- (RhoW) }
 
 ##variance parameters for cohort design
-else if (ModelChoice == "Cohort")
-{ Diagonal <-  RhoW + IAC * (1 - RhoW) / n.individuals
-OffDiagonal <- (1 - RhoW - IAC + (IAC * RhoW)) / n.individuals }
+if (ModelChoice == "Cohort")
+
+{   Diagonal <-  (1 - IAC - RhoW +  IAC*RhoW ) / n.individuals
+OffDiagonal <- RhoW + IAC*(1 - RhoW)/ n.individuals }
   
 ##variance parameters for nested exchangeable model
 else if (ModelChoice == "NEC")
-{ Diagonal <-  RhoA
-OffDiagonal <- RhoW + (1-RhoW)/n.individuals  - RhoA }
+{   Diagonal <-  RhoW + (1-RhoW)/n.individuals  - RhoA 
+OffDiagonal <- RhoA}
   
 #dataframe used to construct the SWD 
 StudyDesign <- data.frame(site = c(1:n.clusters))
@@ -146,7 +147,6 @@ PowerTable_OneTx$Power <- mapply(PowerFunction_OneTx,
                                  Sequence1 = PowerTable_OneTx$Sequence1,
                                  typeIerror = typeIerror
                                  )
-View(PowerTable_OneTx)
 
 #plot power as a function of ICC
 plot(PowerTable_OneTx$RhoW,PowerTable_OneTx$Power, type="l")

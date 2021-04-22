@@ -51,8 +51,8 @@ OffDiagonal <- (1 - RhoW - IAC + (IAC * RhoW)) / n.individuals }
   
 ##variance parameters for nested exchangeable model
 else if (ModelChoice == "NEC")
-{   Diagonal <-  RhoA
-OffDiagonal <- RhoW + (1-RhoW)/n.individuals  - RhoA }
+{   Diagonal <-  RhoW + (1-RhoW)/n.individuals  - RhoA 
+OffDiagonal <- RhoA}
   
 StudyDesign <- data.frame(site = c(1:n.clusters))
 
